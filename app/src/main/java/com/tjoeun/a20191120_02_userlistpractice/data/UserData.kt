@@ -2,19 +2,20 @@ package com.tjoeun.a20191120_02_userlistpractice.data
 
 import org.json.JSONObject
 
-class UserData(loginId:String, name:String) {
+class UserData() {
 
-    var mLoginId = loginId
-    var mName = name
+    var loginId = ""
+    var name = ""
+    var categoryData : CategoryData? = null
 
     companion object{
-        fun getCategory(json:JSONObject) : CategoryData{
-            var categoryData = CategoryData()
-            categoryData.id = json.getInt("id")
-            categoryData.title = json.getString("title")
-            categoryData.color = json.getString("color")
+        fun getUserFromJson(json:JSONObject) : UserData{
+            var userData = UserData()
+            userData.loginId = json.getString("login_id")
+            userData.name = json.getString("name")
+            userData.categoryData = CategoryData.getCategoryFromJson(json.getJSONObject("category"))
 
-            return categoryData
+            return userData
         }
     }
 

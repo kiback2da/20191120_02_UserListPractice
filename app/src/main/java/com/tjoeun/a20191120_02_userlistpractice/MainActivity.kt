@@ -2,7 +2,9 @@ package com.tjoeun.a20191120_02_userlistpractice
 
 import android.os.Bundle
 import com.tjoeun.a20191114_01_okhttp.utils.ConnectServer
+import com.tjoeun.a20191120_02_userlistpractice.adapter.UserListAdapter
 import com.tjoeun.a20191120_02_userlistpractice.data.UserData
+import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 
 class MainActivity : BaseActivity() {
@@ -20,13 +22,23 @@ class MainActivity : BaseActivity() {
     }
 
     override fun setValues() {
-        ConnectServer.getRequestUserInfo(mContext,"active", object : ConnectServer.jsonResponseHandler{
+        getUserListFromJson()
+
+        mainListView.adapter = UserListAdapter(mContext,userList)
+    }
+
+
+    fun getUserListFromJson(){
+        ConnectServer.getRequestUserInfo(mContext,"ALL", object : ConnectServer.jsonResponseHandler{
             override fun onResponse(json: JSONObject) {
                 val data = json.getJSONObject("data")
-                val users = data.getJSONArray("users")
+                val userArr = data.getJSONArray("users")
 
-                for (user in 0..(users.length()-1)){
+                for (i in 0..(userArr.length()-1)){
+                    val userDetail = userArr.getJSONObject(i)
+                    val userData = UserData.getUserFromJson(userDetail)
 
+                    userList.add(userData)
                 }
             }
         })
