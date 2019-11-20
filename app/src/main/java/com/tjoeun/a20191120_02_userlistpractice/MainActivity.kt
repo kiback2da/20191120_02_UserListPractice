@@ -1,5 +1,6 @@
 package com.tjoeun.a20191120_02_userlistpractice
 
+import android.content.Intent
 import android.os.Bundle
 import com.tjoeun.a20191114_01_okhttp.utils.ConnectServer
 import com.tjoeun.a20191120_02_userlistpractice.adapter.UserListAdapter
@@ -20,6 +21,14 @@ class MainActivity : BaseActivity() {
     }
 
     override fun setupEvents() {
+        mainListView.setOnItemClickListener { parent, view, position, id ->
+
+            val userData = userList.get(position)
+
+            val intent = Intent(mContext, UserDetailActivity::class.java)
+            intent.putExtra("user",userData)
+            startActivity(intent)
+        }
     }
 
     override fun setValues() {

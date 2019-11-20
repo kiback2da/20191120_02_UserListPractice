@@ -37,6 +37,27 @@ class ConnectServer {
 
             })
         }
+
+        fun getRequestUserCategory(context: Context, handler: ConnectServer.jsonResponseHandler){
+            var client = OkHttpClient()
+            var urlBuilder = HttpUrl.parse("${BASE_URL}/system/user_category")!!.newBuilder()
+            var requestUrl = urlBuilder.build().toString()
+            var request = Request.Builder().url(requestUrl).build()
+
+            client.newCall(request).enqueue(object : Callback{
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.d("로그","서버 통신 에러")
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    Log.d("로그 : onResponse","onResponse")
+                    var body = response.body()!!.string()
+                    var json = JSONObject(body)
+                    handler?.onResponse(json)
+                }
+
+            })
+        }
     }
 
 }

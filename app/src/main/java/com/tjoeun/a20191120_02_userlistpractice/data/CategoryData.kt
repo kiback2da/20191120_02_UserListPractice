@@ -1,8 +1,9 @@
 package com.tjoeun.a20191120_02_userlistpractice.data
 
 import org.json.JSONObject
+import java.io.Serializable
 
-class CategoryData() {
+class CategoryData() : Serializable{
     var id = 0
     var title = ""
     var color = ""
