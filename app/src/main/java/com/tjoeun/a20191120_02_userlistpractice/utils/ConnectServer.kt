@@ -31,7 +31,6 @@ class ConnectServer {
                 override fun onResponse(call: Call, response: Response) {
                     Log.d("로그 : onResponse","onResponse")
                     var body = response.body()!!.string()
-                    Log.d("로그 : onResponse","${body}")
                     var json = JSONObject(body)
                     handler?.onResponse(json)
                 }

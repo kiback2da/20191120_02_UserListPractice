@@ -10,6 +10,7 @@ import org.json.JSONObject
 class MainActivity : BaseActivity() {
 
     var userList = ArrayList<UserData>()
+    var userAdapter : UserListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,23 +23,37 @@ class MainActivity : BaseActivity() {
     }
 
     override fun setValues() {
-        getUserListFromJson()
+        userAdapter = UserListAdapter(mContext,userList)
+        mainListView.adapter = userAdapter
+    }
 
-        mainListView.adapter = UserListAdapter(mContext,userList)
+    override fun onResume() {
+        super.onResume()
+
+        getUserListFromJson()
     }
 
 
     fun getUserListFromJson(){
         ConnectServer.getRequestUserInfo(mContext,"ALL", object : ConnectServer.jsonResponseHandler{
             override fun onResponse(json: JSONObject) {
+                var code = json.getInt("code")
                 val data = json.getJSONObject("data")
                 val userArr = data.getJSONArray("users")
 
-                for (i in 0..(userArr.length()-1)){
-                    val userDetail = userArr.getJSONObject(i)
-                    val userData = UserData.getUserFromJson(userDetail)
+                if(code == 200) {
+                    //기존 데이터 삭제 (중복방지)
+                    userList.clear()
+                    for (i in 0..(userArr.length() - 1)) {
+                        val userDetail = userArr.getJSONObject(i)
+                        val userData = UserData.getUserFromJson(userDetail)
 
-                    userList.add(userData)
+                        userList.add(userData)
+                    }
+
+                    runOnUiThread {
+                        userAdapter?.notifyDataSetChanged()
+                    }
                 }
             }
         })
